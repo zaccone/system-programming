@@ -83,7 +83,10 @@ int main(int argc, char **argv)
 	read_mem_segment(fmap, st.st_size);
 
 	const char *txt = "DATA IS OVERWRITTEN HERE!";
-	ftruncate(fd, strlen(txt));
+	if (ftruncate(fd, strlen(txt)) < 0) {
+		perror("ftruncate");
+		exit(127);
+	}
 	memcpy(fmap, txt, strlen(txt));
 
 	printf("\n\nReading memory area after modification\n");
